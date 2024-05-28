@@ -10,6 +10,7 @@ To test this setup, place a call to the following number registered on AWS Conne
 The Lambda function, written in Python, utilizes a custom package for generating vanity numbers, as the built-in package did not recognize US-based dialed numbers. All runtime libraries are packaged in a Lambda layer. The Lambda function is invoked via a JSON event trigger from the AWS Connect flow.
 
 ### Automating AWS Resources to Generate Vanity Numbers
+#### *Bonus part*
 
 Follow these steps to automate resource deployment using AWS CloudFormation:
 1. **Package the CloudFormation Template**
@@ -19,13 +20,9 @@ Follow these steps to automate resource deployment using AWS CloudFormation:
     ```sh
 
     aws cloudformation package \
-
-        --template-file template.yaml \
-
+        --template-file deployments.yaml \
         --s3-bucket your-s3-bucket-name \
-
         --output-template-file packaged-template.yaml
-
     ```
 
 2. **Deploy the Packaged CloudFormation Stack**
@@ -35,13 +32,9 @@ Follow these steps to automate resource deployment using AWS CloudFormation:
     ```sh
 
     aws cloudformation deploy \
-
         --template-file packaged-template.yaml \
-
         --stack-name VanityNumberStack \
-
         --capabilities CAPABILITY_IAM
-
     ```
 
 This command will:
@@ -65,9 +58,20 @@ To complete the setup, manually import the contact flow into your Amazon Connect
    - Go to "Routing" > "Contact flows".
 
    - Click "Create contact flow".
+  
+   
 
 3. **Import Contact Flow:**
 
    - Click on the "Import flow" button.
 
    - Select the provided `contact-flow.json` file and upload it
+
+### *Super Bonus part*
+
+For a web application, we can create a Flask app to retrieve data from AWS DynamoDB and host it on AWS S3 for static hosting, with CloudFront for content delivery and caching. 
+
+##### This approach provides a scalable, cost-effective solution for hosting a web interface that interacts with our backend on AWS.
+---
+
+
