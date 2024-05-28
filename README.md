@@ -71,7 +71,7 @@ To complete the setup, manually import the contact flow into your Amazon Connect
 
 For a web application, we can create a Flask app to retrieve data from AWS DynamoDB and host it on AWS S3 for static hosting, with CloudFront for content delivery and caching. 
 
-##### This approach provides a scalable, cost-effective solution for hosting a web interface that interacts with our backend on AWS.
+##### This approach provides a scalable, cost-effective solution for hosting a web interface that interacts with dynamoDB on AWS.
 ---
 
 
