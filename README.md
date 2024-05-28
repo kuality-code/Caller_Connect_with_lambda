@@ -75,3 +75,13 @@ For a web application, we can create a Flask app to retrieve data from AWS Dynam
 ---
 
 
+
+### Reasons for Solution Implementation, Struggles, and Overcomings
+
+I chose an optimal strategy for integrating AWS Connect with Lambda using CloudFormation. The primary challenge I encountered was passing the dialed number to the Lambda function from Connect. After thorough research, I discovered this capability is supported by the built-in AWS Invoke Lambda Connect block. Overall, I enjoyed the experience and the learning process.
+
+### Shortcuts and Production Considerations
+In a production environment, it’s best practice to pass vanity numbers as JSON from Lambda and use AWS Connect Set Attributes to manage them efficiently. However, due to complexity, I simplified this by concatenating vanity numbers into a flat string for Lambda responses in the Connect flow. This shortcut bypasses optimal data handling but enabled quicker implementation for this project.
+
+### Additional Work with More Time
+Given more time, I would have developed a live, deployed web app to display the last five dialers and their generated vanity numbers, pulling data directly from the DynamoDB database.
