@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  LambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service: "lambda.amazonaws.com"
+          Action: "sts:AssumeRole"
+      Policies:
+      - PolicyName: "LambdaDynamoDBPolicy"
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:GetItem"
+            - "dynamodb:Scan"
+            Resource: "*"
+  VanityNumbersTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: "VanityNumbers"
+      AttributeDefinitions:
+      - AttributeName: "phone_number"
+        AttributeType: "S"
+      KeySchema:
+      - AttributeName: "phone_number"
+        KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  VanityNumberFinderFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: "VanityNumberFinderFunction"
+      Handler: "index.lambda_handler"
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+      Code:
+        S3Bucket: Vanity_generators
+        S3Key: folder/1/code/vanity-code.zip
+      Runtime: "python3.8"
+      Timeout: 60
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: "VanityNumbersTable"
+
+  LambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: "lambda:InvokeFunction"
+      FunctionName:
+        Ref: "VanityNumberFinderFunction"
+      Principal: "connect.amazonaws.com"
+
+Outputs:
+  LambdaFunctionArn:
+    Description: "ARN of the Lambda function"
+    Value:
+      Fn::GetAtt:
+      - "VanityNumberFinderFunction"
+      - "Arn"
+
+  VanityNumbersTableName:
+    Description: "Name of the DynamoDB Table"
+    Value:
+      Ref: "VanityNumbersTable"
+
+  LambdaExecutionRoleArn:
+    Description: "ARN of the Lambda Execution Role"
+    Value:
+      Fn::GetAtt:
+      - "LambdaExecutionRole"
+      - "Arn"
+
